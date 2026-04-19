@@ -2,6 +2,7 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>生日快乐 🎂</title>
 
 <style>
@@ -12,18 +13,7 @@ body{
   font-family:"微软雅黑";
 }
 
-/* 背景 */
-#globalBg{
-  position:fixed;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  filter: blur(25px) brightness(0.5);
-  z-index:-1;
-  transition:1s;
-}
-
-/* 页面 */
+/* iPhone安全区适配 */
 .page{
   position:absolute;
   width:100%;
@@ -31,19 +21,40 @@ body{
   display:none;
   justify-content:center;
   align-items:center;
+
+  padding: env(safe-area-inset-top)
+           env(safe-area-inset-right)
+           env(safe-area-inset-bottom)
+           env(safe-area-inset-left);
 }
 
 .active{display:flex;}
 
+/* 背景（始终存在） */
+#globalBg{
+  position:fixed;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter: blur(30px) brightness(0.5);
+  z-index:-1;
+  transition:1s;
+}
+
+/* ⭐ 核心：全屏沉浸式图片 */
 .main{
-  max-width:70%;
-  max-height:70%;
-  border-radius:16px;
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:cover; /* 横图自动裁切 */
   opacity:0;
   transition:1s;
 }
 
-.zoom{transform:scale(1.1);}
+/* 轻微动态 */
+.zoom{
+  transform: scale(1.1) translateY(-10px);
+}
 
 /* 开始页 */
 #start{
@@ -55,10 +66,11 @@ body{
   justify-content:center;
   align-items:center;
   color:white;
-  font-size:28px;
+  font-size:26px;
   z-index:999;
 }
 
+/* 烟花 */
 canvas{
   position:absolute;
   top:0;
@@ -77,7 +89,7 @@ canvas{
   <source src="music.mp3">
 </audio>
 
-<!-- 页面（已删除“生日快乐页”） -->
+<!-- 页面 -->
 <div class="page active"><img class="main" id="main1"></div>
 <div class="page"><img class="main" id="main2"></div>
 <div class="page"><img class="main" id="main3"></div>
@@ -97,7 +109,7 @@ const groups={
   4:["11.jpg","12.jpg","13.jpg","14.jpg","15.jpg"]
 };
 
-// ===== 50秒时间轴 =====
+// ===== 时间轴（50秒）=====
 const timeline=[10000,10000,10000,10000,10000];
 
 const pages=document.querySelectorAll(".page");
@@ -123,6 +135,7 @@ function play(i,d){
       main.src=src;
       main.style.opacity=1;
 
+      // 背景同步（无黑屏）
       globalBg.style.opacity=0;
       setTimeout(()=>{
         globalBg.src=src;
@@ -228,9 +241,10 @@ function startFire(){
   let t1=setInterval(()=>explode(Math.random()*canvas.width,Math.random()*canvas.height*0.6),400);
   timers.push(t1);
 
+  // 拼字卡点
   let t2=setTimeout(()=>{
     clearInterval(t1);
-    createText("老师生日快乐！");
+    createText("生日快乐");
 
     for(let i=0;i<textPoints.length;i++){
       particles.push(new Particle(
@@ -243,6 +257,7 @@ function startFire(){
   },4000);
   timers.push(t2);
 
+  // 爆炸
   let t3=setTimeout(()=>{
     mode="explode";
     explode(canvas.width/2,canvas.height/2);
