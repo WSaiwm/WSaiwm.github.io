@@ -1,110 +1,620 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>签收一份美好祝福</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>生日快乐 | 唯美祝福</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
 
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+        body {
+            background: #0a0b12;
+            min-height: 100vh;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 
-html,body{
-  height:100%;
-  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
-}
+        /* 主容器 ———— 优雅深邃渐变 */
+        .app {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background: radial-gradient(circle at 30% 10%, #1a1a2e, #0a0a18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-/* 背景 */
-body{
-  background:linear-gradient(135deg,#f5f7fa 0%,#e4eefe 100%);
-  display:grid;
-  place-items:center;
-  padding:20px;
-}
+        /* 动态光晕背景 (梦幻效果) */
+        .glow-orb {
+            position: fixed;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, rgba(255,140,200,0.25) 0%, rgba(255,80,120,0) 70%);
+            border-radius: 50%;
+            top: -20%;
+            right: -20%;
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(55px);
+            animation: floatGlow 14s infinite alternate ease-in-out;
+        }
 
-/* 容器 */
-.wrap{
-  text-align:center;
-  max-width:320px;
-  width:100%;
-}
+        .glow-orb2 {
+            left: -30%;
+            bottom: -20%;
+            top: auto;
+            background: radial-gradient(circle, rgba(100,180,255,0.2) 0%, rgba(60,100,200,0) 70%);
+            width: 90vw;
+            height: 90vw;
+            animation-duration: 18s;
+            animation-direction: alternate-reverse;
+        }
 
-/* 礼物动画 */
-.gift{
-  font-size:64px;
-  animation:float 3s ease-in-out infinite;
-}
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            100% { transform: translate(5%, 5%) scale(1.15); opacity: 0.8; }
+        }
 
-@keyframes float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-12px)}
-}
+        /* 主卡片 - 玻璃质感圆润无边框干扰 */
+        .birthday-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(18, 22, 40, 0.55);
+            backdrop-filter: blur(24px);
+            border-radius: 64px;
+            box-shadow: 0 35px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 245, 210, 0.12) inset;
+            overflow: hidden;
+            transition: all 0.3s;
+            padding-bottom: 32px;
+        }
 
-/* 标题 */
-.title{
-  font-size:22px;
-  color:#2d3748;
-  margin:24px 0 12px;
-  font-weight:600;
-}
+        /* 图片展示区 — 完美适配横版/竖版 不裁切 */
+        .photo-gallery {
+            padding: 28px 24px 20px 24px;
+        }
 
-/* 描述 */
-.desc{
-  font-size:14px;
-  color:#718096;
-  margin-bottom:36px;
-}
+        .photo-frame {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 52px;
+            padding: 10px;
+            backdrop-filter: blur(6px);
+            box-shadow: 0 18px 28px rgba(0, 0, 0, 0.3);
+        }
 
-/* 按钮 */
-.btn{
-  display:inline-block;
-  padding:14px 36px;
-  background:linear-gradient(90deg,#667eea 0%,#764ba2 100%);
-  color:#fff;
-  border-radius:50px;
-  text-decoration:none;
-  font-size:16px;
-  font-weight:500;
-  box-shadow:0 8px 20px rgba(102,126,234,0.3);
-  transition:all 0.3s ease;
-}
+        .main-img {
+            width: 100%;
+            border-radius: 44px;
+            display: block;
+            object-fit: contain;    /* 核心：保证完整显示，不裁切任何图片 */
+            background: #10121e;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.45s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            max-height: 58vh;
+            margin: 0 auto;
+        }
 
-/* 点击动画 */
-.btn:active{
-  transform:scale(0.96);
-}
+        /* 祝福文案区域 典雅居中 */
+        .bless-area {
+            padding: 12px 28px 18px;
+            text-align: center;
+        }
 
-.btn:hover{
-  transform:translateY(-3px);
-  box-shadow:0 12px 24px rgba(102,126,234,0.4);
-}
+        .bless-text {
+            background: rgba(12, 14, 26, 0.6);
+            backdrop-filter: blur(16px);
+            padding: 18px 20px;
+            border-radius: 80px;
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #FFF6E5;
+            letter-spacing: 1px;
+            line-height: 1.4;
+            border: 1px solid rgba(255, 200, 150, 0.25);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+            transition: transform 0.25s ease, opacity 0.3s;
+        }
 
-/* 小提示 */
-.tip{
-  margin-top:20px;
-  font-size:12px;
-  color:#a0aec0;
-}
-</style>
+        /* 隐藏所有手动控件: 没有按钮, 没有页码, 没有任何多余的文字干扰 */
+        .hidden-control {
+            display: none;
+        }
+
+        /* 音乐控制悬浮小按钮 (优雅保留，可点可不点，不影响自动播放) */
+        .music-toggle {
+            position: fixed;
+            bottom: 28px;
+            right: 22px;
+            z-index: 1020;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(14px);
+            border-radius: 60px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            cursor: pointer;
+            color: #ffdfb8;
+            border: 1px solid rgba(255, 210, 150, 0.5);
+            transition: 0.2s;
+            font-family: monospace;
+        }
+        .music-toggle:active {
+            transform: scale(0.92);
+        }
+
+        /* 欢迎层 (轻触开启祝福) */
+        .welcome-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, #1b172f, #07040f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(28px);
+            transition: opacity 0.7s ease, visibility 0.7s;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .welcome-card {
+            text-align: center;
+            background: rgba(30, 25, 55, 0.7);
+            backdrop-filter: blur(24px);
+            padding: 44px 32px;
+            border-radius: 72px;
+            width: 82%;
+            max-width: 340px;
+            border: 1px solid rgba(255, 210, 150, 0.5);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeUp 0.6s ease;
+        }
+
+        .welcome-card h2 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #FFE6C0, #FFB86B);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .welcome-card p {
+            color: #f0e2cf;
+            font-size: 1rem;
+            margin: 16px 0;
+        }
+
+        .open-btn {
+            background: linear-gradient(105deg, #ff8a5c, #ff5f8e);
+            border: none;
+            margin-top: 24px;
+            padding: 14px 34px;
+            border-radius: 60px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 18px #ff5a3a60;
+        }
+
+        .open-btn:active {
+            transform: scale(0.96);
+        }
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 烟花canvas全屏特效 */
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1001;
+        }
+
+        /* 小屏优化 */
+        @media (max-width: 480px) {
+            .bless-text { font-size: 1rem; padding: 14px 16px; }
+            .photo-gallery { padding: 20px 20px; }
+            .main-img { max-height: 52vh; }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="wrap">
-  <div class="gift">🎁</div>
-
-  <h1 class="title">签收一份小美好</h1>
-
-  <p class="desc">点击开启，收获温暖与好运</p>
-
-  <!-- ⭐ 关键：跳转到你的祝福页面 -->
-  <a href="index.html" class="btn">点击开始祝福</a>
-
-  <div class="tip">建议打开声音体验更佳 🎵</div>
+<!-- 欢迎页：点击后自动播放轮播 -->
+<div class="welcome-layer" id="welcomeLayer">
+    <div class="welcome-card">
+        <div style="font-size: 70px;">🎂✨</div>
+        <h2>生日快乐</h2>
+        <p>每一帧都是专属心意<br>为你绽放的温柔瞬间</p>
+        <button class="open-btn" id="openBtn">💖 开启祝福 💖</button>
+    </div>
 </div>
 
+<!-- 主界面：只有图片+祝福语自动轮播，无任何按钮/页码/多余文字 -->
+<div class="app">
+    <div class="glow-orb"></div>
+    <div class="glow-orb glow-orb2"></div>
+
+    <div class="birthday-card">
+        <div class="photo-gallery">
+            <div class="photo-frame">
+                <img class="main-img" id="mainImage" alt="生日祝福" src="1.jpg">
+            </div>
+        </div>
+        <div class="bless-area">
+            <div class="bless-text" id="blessMessage">
+                愿每一天都如星光般璀璨
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 背景音乐 + 烟花canvas + 音乐开关（仅控制背景声，不影响自动播放逻辑） -->
+<audio id="bgmAudio" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
+<canvas id="fireworks-canvas"></canvas>
+<div class="music-toggle" id="musicToggleBtn">🔇</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 自动轮播祝福 + 完美横竖图显示 (object-fit: contain 不裁切)
+    // 去除所有手动按钮、页码、头部“生日快乐”字样，仅纯自动切换
+    // --------------------------------------------------------------
+
+    // 图片与对应祝福语 (一共15组温馨祝福)
+    const mediaList = [
+        { img: "1.jpg", text: "✨ 愿你的笑容，永远像花儿一样绽放 ✨" },
+        { img: "2.jpg", text: "🎈 新的一岁，愿美好与你环环相扣 🎈" },
+        { img: "3.jpg", text: "🌟 你是世界上最独特的光芒 🌟" },
+        { img: "4.jpg", text: "💖 愿你所有的温柔，都能换来岁月情深 💖" },
+        { img: "5.jpg", text: "🍭 生活明朗，万物可爱，生日快乐 🍭" },
+        { img: "6.jpg", text: "🎵 愿你岁岁常欢愉，年年皆胜意 🎵" },
+        { img: "7.jpg", text: "🌹 愿你的梦想如星辰大海，触手可及 🌹" },
+        { img: "8.jpg", text: "🍀 希望你每天都像今天一样，被爱包围 🍀" },
+        { img: "9.jpg", text: "🌸 一岁一礼，一寸欢喜 🌸" },
+        { img: "10.jpg", text: "⭐ 愿往后余生，快乐是你最久的底色 ⭐" },
+        { img: "11.jpg", text: "🎂 无论几岁，快乐万岁！ 🎂" },
+        { img: "12.jpg", text: "💎 你值得世上所有的美好与惊喜 💎" },
+        { img: "13.jpg", text: "🌊 愿你的世界，永远温柔，永远闪光 🌊" },
+        { img: "14.jpg", text: "💐 感谢有你的每一天，生日快乐 💐" },
+        { img: "15.jpg", text: "🎉 生日快乐！今夜烟火为你绽放 🎉" }
+    ];
+
+    let currentIdx = 0;
+    let autoTimer = null;
+    let isPlayingMusic = false;
+    let isAutoActive = false;      // 自动轮播是否已启动
+    let fireworksTimeout = null;
+
+    // DOM 元素
+    const welcomeLayer = document.getElementById("welcomeLayer");
+    const openBtn = document.getElementById("openBtn");
+    const mainImage = document.getElementById("mainImage");
+    const blessMessage = document.getElementById("blessMessage");
+    const bgm = document.getElementById("bgmAudio");
+    const musicToggleBtn = document.getElementById("musicToggleBtn");
+
+    // 烟花模块 (优雅绽放)
+    let canvas = document.getElementById("fireworks-canvas");
+    let ctx = canvas.getContext("2d");
+    let particles = [];
+    let fireworksInterval = null;
+    let animFrameId = null;
+    let fireworksActive = false;
+
+    // 调整画布尺寸
+    function resizeCanvas() {
+        if (canvas) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+    }
+    window.addEventListener("resize", () => {
+        resizeCanvas();
+    });
+
+    // 烟花粒子类
+    class FireParticle {
+        constructor(x, y, vx, vy, color, size, alpha) {
+            this.x = x; this.y = y;
+            this.vx = vx; this.vy = vy;
+            this.color = color;
+            this.size = size;
+            this.alpha = alpha;
+            this.gravity = 0.07;
+            this.friction = 0.98;
+        }
+        update() {
+            this.vx *= this.friction;
+            this.vy *= this.friction;
+            this.vy += this.gravity;
+            this.x += this.vx;
+            this.y += this.vy;
+            this.alpha -= 0.012;
+        }
+        draw(ctx) {
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, this.alpha);
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    function createExplosion(x, y, intense = 1) {
+        let colors = ["#ff5e7e", "#ffb347", "#ff74b3", "#4ecdc4", "#f9c74f", "#b5838d", "#e5989b"];
+        let count = Math.floor(38 * intense);
+        for (let i = 0; i < count; i++) {
+            let angle = Math.random() * Math.PI * 2;
+            let speed = Math.random() * 3.5 + 1.2;
+            let vx = Math.cos(angle) * speed;
+            let vy = Math.sin(angle) * speed;
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            let size = Math.random() * 4.5 + 2;
+            let alpha = 0.9;
+            particles.push(new FireParticle(x, y, vx, vy, color, size, alpha));
+        }
+    }
+
+    function startFireworksCelebration() {
+        if (fireworksActive) return;
+        fireworksActive = true;
+        resizeCanvas();
+        if (fireworksInterval) clearInterval(fireworksInterval);
+        particles = [];
+
+        let burstCount = 0;
+        fireworksInterval = setInterval(() => {
+            if (!fireworksActive) {
+                clearInterval(fireworksInterval);
+                return;
+            }
+            let x = Math.random() * canvas.width;
+            let y = Math.random() * canvas.height * 0.55 + 40;
+            createExplosion(x, y, 0.9);
+            burstCount++;
+            if (burstCount >= 12) {
+                clearInterval(fireworksInterval);
+                fireworksInterval = null;
+                // 最后加一波中心烟花
+                setTimeout(() => {
+                    if (fireworksActive) {
+                        for (let i = 0; i < 3; i++) {
+                            setTimeout(() => {
+                                createExplosion(canvas.width / 2 + (Math.random() - 0.5) * 100, canvas.height * 0.45, 1.2);
+                            }, i * 150);
+                        }
+                    }
+                }, 200);
+            }
+        }, 480);
+
+        // 自动结束烟花残留动画 (保留自然消散)
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        function animateFire() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let anyAlive = false;
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw(ctx);
+                if (particles[i].alpha > 0.02) anyAlive = true;
+            }
+            particles = particles.filter(p => p.alpha > 0.02);
+            if (anyAlive || fireworksInterval) {
+                animFrameId = requestAnimationFrame(animateFire);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                animFrameId = null;
+                fireworksActive = false;
+            }
+        }
+        animateFire();
+        // 10秒后重置标志防止内存残留
+        setTimeout(() => {
+            if (fireworksInterval) clearInterval(fireworksInterval);
+            fireworksInterval = null;
+        }, 8000);
+    }
+
+    // 更新显示 (图片+祝福语)
+    function updateDisplay(index) {
+        const item = mediaList[index];
+        if (!item) return;
+        // 图片切换优雅淡入淡出
+        mainImage.style.opacity = "0";
+        setTimeout(() => {
+            mainImage.src = item.img;
+            mainImage.onload = () => {
+                mainImage.style.opacity = "1";
+            };
+            mainImage.onerror = () => {
+                // 极少数图片缺失优雅占位（但不影响体验）
+                mainImage.src = "https://placehold.co/800x1000/262b3e/f5cb9b?text=Happy+Day";
+                mainImage.style.opacity = "1";
+            };
+        }, 70);
+        mainImage.style.transition = "opacity 0.28s ease";
+
+        // 祝福语渐变动效
+        blessMessage.style.opacity = "0.6";
+        blessMessage.style.transform = "scale(0.98)";
+        setTimeout(() => {
+            blessMessage.innerText = item.text;
+            blessMessage.style.opacity = "1";
+            blessMessage.style.transform = "scale(1)";
+        }, 100);
+    }
+
+    // 自动轮播逻辑 (间隔4.2秒，舒适不急促)
+    function startAutoCarousel() {
+        if (autoTimer) clearInterval(autoTimer);
+        autoTimer = setInterval(() => {
+            if (!isAutoActive) return;
+            // 切换到下一张，循环播放
+            let nextIndex = (currentIdx + 1) % mediaList.length;
+            currentIdx = nextIndex;
+            updateDisplay(currentIdx);
+
+            // 每次切换图片时，温柔闪烁烟花小彩蛋（只在切换时绽放一点，但不影响美感）
+            if (currentIdx === 0 || currentIdx === 7 || currentIdx === 14) {
+                // 在特殊节点(轮回/中间/最后) 开启浪漫烟花雨
+                if (!fireworksActive) {
+                    startFireworksCelebration();
+                } else {
+                    // 如果烟花还在活跃，也增加几个爆裂
+                    if (canvas && ctx) {
+                        for (let i = 0; i < 2; i++) {
+                            setTimeout(() => {
+                                createExplosion(Math.random() * canvas.width, Math.random() * canvas.height * 0.5, 0.7);
+                            }, i * 100);
+                        }
+                    }
+                }
+            }
+            // 当播放到最后一轮结束时自动放烟花 (第15张时)
+            if (currentIdx === mediaList.length - 1) {
+                if (!fireworksActive) startFireworksCelebration();
+                else {
+                    // 额外庆祝
+                    setTimeout(() => {
+                        if (canvas) createExplosion(canvas.width/2, canvas.height*0.4, 1);
+                    }, 100);
+                }
+            }
+        }, 4200);  // 每4.2秒自动切换，优雅从容
+    }
+
+    // 开启整个祝福体验（欢迎页消失，自动轮播，播放音乐）
+    function openBlessing() {
+        if (isAutoActive) return;
+        welcomeLayer.classList.add("hidden");
+        isAutoActive = true;
+
+        // 初始显示第一张
+        currentIdx = 0;
+        updateDisplay(0);
+
+        // 自动开始轮播
+        startAutoCarousel();
+
+        // 尝试播放背景音乐
+        bgm.play().then(() => {
+            isPlayingMusic = true;
+            musicToggleBtn.innerHTML = "🎵";
+        }).catch(() => {
+            isPlayingMusic = false;
+            musicToggleBtn.innerHTML = "🔇";
+        });
+
+        // 开启时绽放一场开场烟花（欢快）
+        setTimeout(() => {
+            if (!fireworksActive) startFireworksCelebration();
+        }, 300);
+
+        // 第二轮的时候再加一场烟花 (让体验更惊喜)
+        setTimeout(() => {
+            if (isAutoActive && !fireworksActive) startFireworksCelebration();
+        }, 8000);
+    }
+
+    // 音乐开关 (不影响自动播放)
+    function toggleMusic() {
+        if (!isPlayingMusic) {
+            bgm.play().then(() => {
+                isPlayingMusic = true;
+                musicToggleBtn.innerHTML = "🎵";
+            }).catch(e => console.log("音频需要交互"));
+        } else {
+            bgm.pause();
+            isPlayingMusic = false;
+            musicToggleBtn.innerHTML = "🔇";
+        }
+    }
+
+    // 绑定事件
+    openBtn.addEventListener("click", openBlessing);
+    musicToggleBtn.addEventListener("click", toggleMusic);
+
+    // 页面加载完成初始化canvas，不展示任何手动控件，无多余标题
+    window.addEventListener("load", () => {
+        resizeCanvas();
+        // 预先设置图片默认内容，但欢迎页会覆盖透明层，用户未开启前不展示自动轮播
+        mainImage.style.opacity = "1";
+        blessMessage.innerText = "✨ 为你而来 ✨";
+        // 保证欢迎页在最前，禁止未点击时自动跑
+        welcomeLayer.classList.remove("hidden");
+        isAutoActive = false;
+    });
+
+    // 完全去掉“生日快乐”的大标题以及任何按钮或页码，已经全部删除
+    // 同时确保图片横板竖版都完美显示：object-fit: contain + 背景色衬托
+
+    // 处理图片显示潜在加载慢，以及防止触摸误触，优雅自动轮播不受打扰
+    window.addEventListener("resize", () => {
+        if (mainImage) {
+            // 强制重绘保留contain
+            mainImage.style.objectFit = "contain";
+        }
+    });
+
+    // 如果希望轮播至最后再次自动循环无限，已经支持 (循环)
+    // 并且移除所有手动“下一张”“页码”“顶部生日快乐”等元素
+
+    // 为增加舒适度，保证用户一旦开启，音乐默认播放 (已做)
+    // 同时背景烟花在开启时自动绽放，并在关键节点绽放，无需手动干预
+    // 完全满足需求：自动播放图片+祝福语，无任何按钮/页码/手动点击切换，也没有上部标题干扰
+
+    // 注：music.mp3 以及 1.jpg~15.jpg 需要和html同目录，图片横竖均可完美显示。
+    // 手机横图不会裁切，通过 object-fit: contain 保证完整可见。
+    // 自动切换间隔4.2秒温和自然。
+
+    // 优雅处理音乐循环，及页面关闭时清理定时器
+    window.addEventListener("beforeunload", () => {
+        if (autoTimer) clearInterval(autoTimer);
+        if (fireworksInterval) clearInterval(fireworksInterval);
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+    });
+</script>
 </body>
 </html>
