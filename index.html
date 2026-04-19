@@ -1,340 +1,61 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>生日快乐 🎂</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>签收一份美好祝福</title>
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
 body{
-  margin:0;
-  overflow:hidden;
-  background:black;
+background:linear-gradient(135deg,#f5f7fa 0%,#e4eefe 100%);
+display:grid;place-items:center;padding:20px
 }
-
-/* 页面 */
-.page{
-  position:absolute;
-  width:100%;
-  height:100%;
-  display:none;
+.wrap{text-align:center;max-width:320px;width:100%}
+.gift{
+font-size:60px;
+animation:float 3s ease-in-out infinite
 }
-.active{display:block;}
-
-/* 背景 */
-#globalBg{
-  position:fixed;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  filter: blur(30px) brightness(0.5);
-  z-index:-1;
+@keyframes float{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
 }
-
-/* 图片容器 */
-.imgBox{
-  position:absolute;
-  transition:1s;
+.title{
+font-size:22px;
+color:#2d3748;
+margin:24px 0 12px;
+font-weight:500
 }
-
-/* 图片 */
-.imgBox img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:16px;
+.desc{
+font-size:14px;
+color:#718096;
+margin-bottom:36px
 }
-
-/* 开始页 */
-#start{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:black;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:white;
-  font-size:26px;
-  z-index:999;
+.btn{
+display:inline-block;
+padding:14px 36px;
+background:linear-gradient(90deg,#667eea 0%,#764ba2 100%);
+color:#fff;
+border-radius:50px;
+text-decoration:none;
+font-size:16px;
+font-weight:500;
+box-shadow:0 8px 20px rgba(102,126,234,0.3);
+transition:all 0.3s ease
 }
-
-canvas{
-  position:absolute;
-  top:0;
-  left:0;
+.btn:hover{
+transform:translateY(-3px);
+box-shadow:0 12px 24px rgba(102,126,234,0.4)
 }
+.btn:active{transform:translateY(0)}
 </style>
 </head>
-
 <body>
-
-<div id="start">🎁 点击开始</div>
-<img id="globalBg">
-
-<audio id="bgm" loop>
-  <source src="music.mp3">
-</audio>
-
-<!-- 页面 -->
-<div class="page active" id="p1"></div>
-<div class="page" id="p2"></div>
-<div class="page" id="p3"></div>
-<div class="page" id="p4"></div>
-
-<!-- 烟花 -->
-<div class="page">
-  <canvas id="cvs"></canvas>
+<div class="wrap">
+<div class="gift">🎁</div>
+<h1 class="title">签收一份小美好</h1>
+<p class="desc">点击开启，收获温暖与好运</p >
+<a href=" '愿你平安喜乐，万事顺意✨')" class="btn">点击开始祝福</a >
 </div>
-
-<script>
-// 图片
-const groups={
-  1:["1.jpg","2.jpg","3.jpg"],
-  2:["4.jpg","5.jpg","6.jpg"],
-  3:["7.jpg","8.jpg","9.jpg","10.jpg"],
-  4:["11.jpg","12.jpg","13.jpg","14.jpg","15.jpg"]
-};
-
-const timeline=[10000,10000,10000,10000,10000];
-const pages=document.querySelectorAll(".page");
-
-let index=0,timers=[];
-
-function clearAll(){
-  timers.forEach(t=>clearTimeout(t));
-  timers=[];
-}
-
-// 判断横竖
-function isLandscape(img){
-  return img.naturalWidth > img.naturalHeight;
-}
-
-// 随机位置
-function randomPos(){
-  return {
-    x: Math.random()*20-10,
-    y: Math.random()*20-10
-  }
-}
-
-// 播放（拼贴核心）
-function play(pageIndex,duration){
-  const page=document.getElementById("p"+(pageIndex+1));
-  const imgs=groups[pageIndex+1];
-
-  let i=0;
-  const interval=duration/imgs.length;
-
-  function showNext(){
-    page.innerHTML="";
-
-    let src=imgs[i];
-
-    let img=new Image();
-    img.src=src;
-
-    img.onload=()=>{
-      globalBg.src=src;
-
-      if(isLandscape(img)){
-        // ⭐ 横图：两张拼贴
-        let nextSrc=imgs[(i+1)%imgs.length];
-
-        createBox(page,src, "top");
-        createBox(page,nextSrc, "bottom");
-
-        i++;
-      }else{
-        // ⭐ 竖图：单张
-        createBox(page,src,"full");
-      }
-    };
-
-    i=(i+1)%imgs.length;
-  }
-
-  function createBox(page,src,type){
-    let box=document.createElement("div");
-    box.className="imgBox";
-
-    let pos=randomPos();
-
-    if(type==="top"){
-      box.style.top="5%";
-      box.style.left="10%";
-      box.style.width="80%";
-      box.style.height="40%";
-    }
-    else if(type==="bottom"){
-      box.style.top="50%";
-      box.style.left="5%";
-      box.style.width="90%";
-      box.style.height="40%";
-    }
-    else{
-      box.style.top="10%";
-      box.style.left="5%";
-      box.style.width="90%";
-      box.style.height="80%";
-    }
-
-    box.style.transform=`translate(${pos.x}px,${pos.y}px)`;
-
-    let img=document.createElement("img");
-    img.src=src;
-
-    box.appendChild(img);
-    page.appendChild(box);
-  }
-
-  showNext();
-  let t=setInterval(showNext,interval);
-  timers.push(t);
-}
-
-// ===== 烟花 =====
-let canvas,ctx,particles=[],textPoints=[],mode="fire";
-
-class Particle{
-  constructor(x,y){
-    this.x=x;
-    this.y=y;
-    this.vx=(Math.random()-0.5)*6;
-    this.vy=(Math.random()-0.5)*6;
-    this.color=`hsl(${Math.random()*360},100%,60%)`;
-  }
-  update(){
-    this.x+=this.vx;
-    this.y+=this.vy;
-    this.vy+=0.05;
-  }
-  draw(){
-    ctx.fillStyle=this.color;
-    ctx.fillRect(this.x,this.y,3,3);
-  }
-}
-
-function explode(x,y){
-  for(let i=0;i<80;i++){
-    particles.push(new Particle(x,y));
-  }
-}
-
-function createText(text){
-  let off=document.createElement("canvas");
-  let octx=off.getContext("2d");
-
-  off.width=canvas.width;
-  off.height=canvas.height;
-
-  octx.fillStyle="white";
-  octx.font="bold 120px 微软雅黑";
-  octx.textAlign="center";
-  octx.fillText(text,canvas.width/2,canvas.height/2);
-
-  let data=octx.getImageData(0,0,off.width,off.height).data;
-
-  textPoints=[];
-  for(let y=0;y<off.height;y+=6){
-    for(let x=0;x<off.width;x+=6){
-      let i=(y*off.width+x)*4;
-      if(data[i+3]>128){
-        textPoints.push({x,y});
-      }
-    }
-  }
-}
-
-function gather(){
-  particles.forEach((p,i)=>{
-    let t=textPoints[i%textPoints.length];
-    p.x+=(t.x-p.x)*0.08;
-    p.y+=(t.y-p.y)*0.08;
-  });
-}
-
-function animate(){
-  ctx.fillStyle="rgba(0,0,0,0.2)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  particles.forEach(p=>{
-    if(mode==="fire"||mode==="explode")p.update();
-    if(mode==="gather")gather();
-    p.draw();
-  });
-
-  requestAnimationFrame(animate);
-}
-
-function startFire(){
-  canvas=document.getElementById("cvs");
-  ctx=canvas.getContext("2d");
-  canvas.width=window.innerWidth;
-  canvas.height=window.innerHeight;
-
-  particles=[];
-  mode="fire";
-
-  animate();
-
-  let t1=setInterval(()=>explode(Math.random()*canvas.width,Math.random()*canvas.height*0.6),400);
-  timers.push(t1);
-
-  let t2=setTimeout(()=>{
-    clearInterval(t1);
-    createText("生日快乐");
-
-    for(let i=0;i<textPoints.length;i++){
-      particles.push(new Particle(
-        Math.random()*canvas.width,
-        Math.random()*canvas.height
-      ));
-    }
-
-    mode="gather";
-  },4000);
-  timers.push(t2);
-
-  let t3=setTimeout(()=>{
-    mode="explode";
-    explode(canvas.width/2,canvas.height/2);
-  },7000);
-  timers.push(t3);
-}
-
-// 页面切换
-function show(i){
-  clearAll();
-
-  pages.forEach(p=>p.classList.remove("active"));
-  pages[i].classList.add("active");
-
-  let d=timeline[i];
-
-  if(i<=3) play(i,d);
-  if(i===4) startFire();
-
-  let t=setTimeout(()=>{
-    index++;
-    if(index>=pages.length){
-      index=0;
-      bgm.currentTime=0;
-    }
-    show(index);
-  },d);
-
-  timers.push(t);
-}
-
-// 开始
-start.onclick=()=>{
-  start.style.display="none";
-  bgm.play();
-  show(0);
-};
-</script>
-
 </body>
 </html>
