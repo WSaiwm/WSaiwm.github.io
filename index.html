@@ -10,27 +10,18 @@ body{
   margin:0;
   overflow:hidden;
   background:black;
-  font-family:"微软雅黑";
 }
 
-/* iPhone安全区适配 */
+/* 页面 */
 .page{
   position:absolute;
   width:100%;
   height:100%;
   display:none;
-  justify-content:center;
-  align-items:center;
-
-  padding: env(safe-area-inset-top)
-           env(safe-area-inset-right)
-           env(safe-area-inset-bottom)
-           env(safe-area-inset-left);
 }
+.active{display:block;}
 
-.active{display:flex;}
-
-/* 背景（始终存在） */
+/* 背景 */
 #globalBg{
   position:fixed;
   width:100%;
@@ -38,22 +29,20 @@ body{
   object-fit:cover;
   filter: blur(30px) brightness(0.5);
   z-index:-1;
+}
+
+/* 图片容器 */
+.imgBox{
+  position:absolute;
   transition:1s;
 }
 
-/* ⭐ 核心：全屏沉浸式图片 */
-.main{
-  position:absolute;
+/* 图片 */
+.imgBox img{
   width:100%;
   height:100%;
-  object-fit:cover; /* 横图自动裁切 */
-  opacity:0;
-  transition:1s;
-}
-
-/* 轻微动态 */
-.zoom{
-  transform: scale(1.1) translateY(-10px);
+  object-fit:cover;
+  border-radius:16px;
 }
 
 /* 开始页 */
@@ -70,7 +59,6 @@ body{
   z-index:999;
 }
 
-/* 烟花 */
 canvas{
   position:absolute;
   top:0;
@@ -81,8 +69,7 @@ canvas{
 
 <body>
 
-<div id="start">🎁 点击开始祝福</div>
-
+<div id="start">🎁 点击开始</div>
 <img id="globalBg">
 
 <audio id="bgm" loop>
@@ -90,18 +77,18 @@ canvas{
 </audio>
 
 <!-- 页面 -->
-<div class="page active"><img class="main" id="main1"></div>
-<div class="page"><img class="main" id="main2"></div>
-<div class="page"><img class="main" id="main3"></div>
-<div class="page"><img class="main" id="main4"></div>
+<div class="page active" id="p1"></div>
+<div class="page" id="p2"></div>
+<div class="page" id="p3"></div>
+<div class="page" id="p4"></div>
 
-<!-- 烟花页 -->
+<!-- 烟花 -->
 <div class="page">
   <canvas id="cvs"></canvas>
 </div>
 
 <script>
-// ===== 图片 =====
+// 图片
 const groups={
   1:["1.jpg","2.jpg","3.jpg"],
   2:["4.jpg","5.jpg","6.jpg"],
@@ -109,10 +96,9 @@ const groups={
   4:["11.jpg","12.jpg","13.jpg","14.jpg","15.jpg"]
 };
 
-// ===== 时间轴（50秒）=====
 const timeline=[10000,10000,10000,10000,10000];
-
 const pages=document.querySelectorAll(".page");
+
 let index=0,timers=[];
 
 function clearAll(){
@@ -120,40 +106,95 @@ function clearAll(){
   timers=[];
 }
 
-// ===== 图片播放 =====
-function play(i,d){
-  const imgs=groups[i+1];
-  const main=document.getElementById("main"+(i+1));
-  let k=0;
-  const interval=d/imgs.length;
+// 判断横竖
+function isLandscape(img){
+  return img.naturalWidth > img.naturalHeight;
+}
 
-  function next(){
-    let src=imgs[k];
-    main.style.opacity=0;
+// 随机位置
+function randomPos(){
+  return {
+    x: Math.random()*20-10,
+    y: Math.random()*20-10
+  }
+}
 
-    setTimeout(()=>{
-      main.src=src;
-      main.style.opacity=1;
+// 播放（拼贴核心）
+function play(pageIndex,duration){
+  const page=document.getElementById("p"+(pageIndex+1));
+  const imgs=groups[pageIndex+1];
 
-      // 背景同步（无黑屏）
-      globalBg.style.opacity=0;
-      setTimeout(()=>{
-        globalBg.src=src;
-        globalBg.style.opacity=1;
-      },300);
+  let i=0;
+  const interval=duration/imgs.length;
 
-      main.classList.add("zoom");
-    },300);
+  function showNext(){
+    page.innerHTML="";
 
-    k=(k+1)%imgs.length;
+    let src=imgs[i];
+
+    let img=new Image();
+    img.src=src;
+
+    img.onload=()=>{
+      globalBg.src=src;
+
+      if(isLandscape(img)){
+        // ⭐ 横图：两张拼贴
+        let nextSrc=imgs[(i+1)%imgs.length];
+
+        createBox(page,src, "top");
+        createBox(page,nextSrc, "bottom");
+
+        i++;
+      }else{
+        // ⭐ 竖图：单张
+        createBox(page,src,"full");
+      }
+    };
+
+    i=(i+1)%imgs.length;
   }
 
-  next();
-  let t=setInterval(next,interval);
+  function createBox(page,src,type){
+    let box=document.createElement("div");
+    box.className="imgBox";
+
+    let pos=randomPos();
+
+    if(type==="top"){
+      box.style.top="5%";
+      box.style.left="10%";
+      box.style.width="80%";
+      box.style.height="40%";
+    }
+    else if(type==="bottom"){
+      box.style.top="50%";
+      box.style.left="5%";
+      box.style.width="90%";
+      box.style.height="40%";
+    }
+    else{
+      box.style.top="10%";
+      box.style.left="5%";
+      box.style.width="90%";
+      box.style.height="80%";
+    }
+
+    box.style.transform=`translate(${pos.x}px,${pos.y}px)`;
+
+    let img=document.createElement("img");
+    img.src=src;
+
+    box.appendChild(img);
+    page.appendChild(box);
+  }
+
+  showNext();
+  let t=setInterval(showNext,interval);
   timers.push(t);
 }
 
-// ===== 粒子烟花 =====
+// ===== 烟花 =====
 let canvas,ctx,particles=[],textPoints=[],mode="fire";
 
 class Particle{
@@ -241,7 +282,6 @@ function startFire(){
   let t1=setInterval(()=>explode(Math.random()*canvas.width,Math.random()*canvas.height*0.6),400);
   timers.push(t1);
 
-  // 拼字卡点
   let t2=setTimeout(()=>{
     clearInterval(t1);
     createText("生日快乐");
@@ -257,7 +297,6 @@ function startFire(){
   },4000);
   timers.push(t2);
 
-  // 爆炸
   let t3=setTimeout(()=>{
     mode="explode";
     explode(canvas.width/2,canvas.height/2);
@@ -265,7 +304,7 @@ function startFire(){
   timers.push(t3);
 }
 
-// ===== 页面切换 =====
+// 页面切换
 function show(i){
   clearAll();
 
@@ -274,13 +313,8 @@ function show(i){
 
   let d=timeline[i];
 
-  if(i>=0 && i<=3){
-    play(i,d);
-  }
-
-  if(i===4){
-    startFire();
-  }
+  if(i<=3) play(i,d);
+  if(i===4) startFire();
 
   let t=setTimeout(()=>{
     index++;
@@ -294,7 +328,7 @@ function show(i){
   timers.push(t);
 }
 
-// ===== 开始 =====
+// 开始
 start.onclick=()=>{
   start.style.display="none";
   bgm.play();
